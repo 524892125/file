@@ -18,4 +18,4 @@ import 'element-theme-darkplus/lib/select.css';
 
 
 
-需要往html标签添加 class dark
+> 需要往html标签添加 class dark
