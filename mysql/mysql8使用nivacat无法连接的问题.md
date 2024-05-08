@@ -40,3 +40,9 @@ FLUSH PRIVILEGES;
 再次输入select host,user,authentication_string,plugin from mysql.user;
 
 可以看到root的plugin变成了mysql_native_password
+
+三、有可能会有这个问题，修改mysql配置文件，将bind-address = 127.0.0.1注释，开放所有连接
+
+```shell
+sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+```
