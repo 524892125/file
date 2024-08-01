@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .waterfall {
+            width: 600px;
+            position: relative;
+        }
+
+        .item {
+            position: absolute;
+            width: 200px; /* 每列的宽度 */
+            background-color: #ccc;
+            border: 1px solid #999;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="waterfall">
+    <div class="item" style="height: 200px;">Item 1</div>
+    <div class="item" style="height: 250px;">Item 2</div>
+    <div class="item" style="height: 180px;">Item 3</div>
+    <div class="item" style="height: 220px;">Item 4</div>
+    <div class="item" style="height: 240px;">Item 5</div>
+    <div class="item" style="height: 200px;">Item 6</div>
+    <div class="item" style="height: 420px;">Item 7</div>
+    <div class="item" style="height: 140px;">Item 8</div>
+    <div class="item" style="height: 500px;">Item 9</div>
+    <div class="item" style="height: 120px;">Item 10</div>
+    <div class="item" style="height: 340px;">Item 11</div>
+    <div class="item" style="height: 200px;">Item 12</div>
+    <!-- 更多项目 -->
+</div>
+
+<script>
+    window.onload = function() {
+        // 获取所有的项目元素
+        var items = document.querySelectorAll('.item');
+
+        // 获取瀑布流容器的宽度
+        var containerWidth = document.querySelector('.waterfall').offsetWidth;
+
+        // 假设每列的宽度为固定值，这里设置为200px
+        var columnWidth = 200;
+
+        // 计算列数
+        var columns = Math.floor(containerWidth / columnWidth);
+
+        // 初始化一个数组来存储每列的高度
+        var columnHeights = new Array(columns).fill(0);
+        console.log(columnHeights)
+
+        // 遍历每个项目，按顺序放置到列中
+        items.forEach(function(item, index) {
+            // 当前要放置到的列
+            var columnIndex = index % columns;
+
+            // 设置项目的位置
+            item.style.left = columnIndex * columnWidth + 'px';
+            item.style.top = columnHeights[columnIndex] + 'px';
+
+            // 更新当前列的高度
+            columnHeights[columnIndex] += item.offsetHeight + 10; // 增加10像素的间距
+            console.log('columnHeights', columnHeights)
+        });
+
+
+        // 更新容器的高度，确保所有项目都能显示完全
+        var maxHeight = Math.max.apply(null, columnHeights);
+        console.log('maxHeight', maxHeight)
+        document.querySelector('.waterfall').style.height = maxHeight + 'px';
+    };
+
+
+</script>
+</body>
+</html>
