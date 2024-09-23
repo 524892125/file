@@ -1,5 +1,6 @@
 Spring boot允许跨域
 
+```java
 package com.spring;
 
 import org.springframework.context.annotation.Configuration;
@@ -16,3 +17,4 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedMethods("*"); // 允许所有 HTTP 方法
     }
 }
+```
