@@ -2,7 +2,8 @@
 -Xms1024m
 -Xmx4096m
 -XX:ReservedCodeCacheSize=512m
--XX:+UseG1GC
+-XX:+UseConcMarkSweepGC
+-XX:+UseParNewGC
 -XX:SoftRefLRUPolicyMSPerMB=50
 -XX:+HeapDumpOnOutOfMemoryError
 -XX:-OmitStackTraceInFastThrow
