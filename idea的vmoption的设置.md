@@ -14,6 +14,20 @@
 -Dkotlinx.coroutines.debug=off
 ```
 
+```java
+-Xms1024m
+-Xmx3000m
+-XX:ReservedCodeCacheSize=512m
+-XX:+UseG1GC
+-XX:InitiatingHeapOccupancyPercent=35
+-Dsun.java2d.d3d=true 
+最新设置
+```
+启用硬件加速： 在 idea64.exe.vmoptions 添加：
+-Dsun.java2d.opengl=true
+或使用更先进的 DirectX 渲染（Windows 专属）：
+-Dsun.java2d.d3d=true
+
 
 * -Xms1024m：设置初始堆内存大小为 1024MB（1GB）。根据项目大小，如果启动时消耗的内存过多，可以增大这个值。
 * -Xmx4096m：最大堆内存设置为 4096MB（4GB）。如果您有更多的 RAM，可以考虑增大到 6GB 或 8GB（比如 -Xmx8192m）。
