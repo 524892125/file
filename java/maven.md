@@ -3,6 +3,6 @@
 :: cd E
 e:
 cd E:\Code\Kilf_Web\spring_api
-C:\Users\lisheng\.m2\wrapper\dists\apache-maven-3.9.9-bin\4nf9hui3q3djbarqar9g711ggc\apache-maven-3.9.9\bin\mvn clean package -Dmaven.repo.local=C:\Users\lisheng\.m2\repository
+E:\App\IntelliJ IDEA 2024.3.1\plugins\maven\lib\maven3\bin\mvn clean package -Dmaven.repo.local=C:\Users\lisheng\.m2\repository
 pause
 ```
