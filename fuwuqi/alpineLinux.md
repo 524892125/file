@@ -10,3 +10,7 @@ https://mirrors.aliyun.com/alpine/latest-stable/main/
 
 http://mirrors.aliyun.com/alpine/v3.14/main/
 http://mirrors.aliyun.com/alpine/v3.14/community/
+
+
+http://dl-cdn.alpinelinux.org/alpine/edge/main
+http://dl-cdn.alpinelinux.org/alpine/edge/community
