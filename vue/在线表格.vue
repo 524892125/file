@@ -1,4 +1,7 @@
 <template>
+<!--    npm install handsontable-->
+
+
     <a-modal :maskClosable="false" width="90%" okText="导入" v-model:visible="props.visible" @cancel="handleCancel" @ok="handleOk">
         <template #title>
             批量导入
