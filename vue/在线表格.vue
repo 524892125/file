@@ -86,6 +86,7 @@ function clearAllRowColor () {
 
 function addTip(row, tip) {
     if (tipMap.value[row]) {
+        tipMap.value[row] = tipMap.value[row] + '；' + tip
         return
     }
 
@@ -227,6 +228,7 @@ function open () {
             if (td._tippy) {
                 td._tippy.destroy();
             }
+            console.debug("aa", tipMap.value)
             if (tipMap.value[row]) {
                 console.debug(tipMap.value[row])
                 tippy(td, {
@@ -244,6 +246,7 @@ function open () {
 }
 
 async function validItem () {
+    tipMap.value = {}
     emit('valid', JSON.parse(JSON.stringify(hot.value.getData())))
 }
 
@@ -284,7 +287,7 @@ function setDuplicateRows (...indexes) {
     for (let i of Object.values(duplicateIndexesGrouped)) {
         for (let index3 of i) {
             setRowColor(index3)
-            addTip(index3, i.map(item => item + 1).join(',') + "行重复")
+            addTip(index3, i.map(item => item + 1).join(',') + "行" + indexes.map(item => item + 1).join('+') + "列重复")
         }
     }
 }
