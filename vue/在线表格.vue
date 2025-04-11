@@ -1,7 +1,4 @@
 <template>
-<!--    npm install handsontable-->
-
-
     <a-modal :maskClosable="false" width="90%" okText="导入" v-model:visible="props.visible" @cancel="handleCancel" @ok="handleOk">
         <template #title>
             批量导入
@@ -30,7 +27,7 @@ const hot = ref()
 const visible = ref(false);
 const emit = defineEmits( ['ok', 'cancel', 'edit', 'valid'])
 // 用于保存所有创建的 tippy 实例
-const tippyInstances = ref([])
+const tipMap = ref({})
 
 const props = defineProps({
     colHeaders: {
@@ -88,23 +85,15 @@ function clearAllRowColor () {
 
 
 function addTip(row, tip) {
-    const tdList = document.querySelectorAll(`.htCore tbody tr:nth-child(${+row + 1}) td`);
+    if (tipMap.value[row]) {
+        return
+    }
 
-    tdList.forEach(td => {
-        const instance = tippy(td, {
-            placement: 'top',
-            arrow: true,
-            onShow(inst) {
-                inst.setContent(tip);
-            }
-        });
-        tippyInstances.value.push(instance);
-    });
+    tipMap.value[row] = tip
 }
 
 function clearAllTips() {
-    tippyInstances.value.forEach(inst => inst?.destroy());
-    tippyInstances.value = []; // 清空引用，防止内存泄漏
+    tipMap.value = {}
 }
 
 function handleCancel () {
@@ -154,6 +143,7 @@ function open () {
         data: props.defaultData,
         colHeaders: props.colHeaders, // default true
         search: true,
+        filters: true,
         rowHeaders: true,
         dropdownMenu: true,
         height: '70vh',
@@ -224,6 +214,29 @@ function open () {
                 //     const [row, col, oldValue, newValue] = change;
                 //     console.debug(`Row: ${row}, Col: ${col}, Old Value: ${oldValue}, New Value: ${newValue}`);
                 // });
+            }
+        },
+        afterOnCellMouseOver: function(event, coords, td) {
+            const { row, col } = coords;
+            // if (row >= 0 && col >= 0) {
+            //     const value = this.getDataAtCell(row, col);
+            //     td.title = `悬停提示：值是 ${value}`;
+            // }
+
+            // 如果之前已经有 tippy，先销毁
+            if (td._tippy) {
+                td._tippy.destroy();
+            }
+            if (tipMap.value[row]) {
+                console.debug(tipMap.value[row])
+                tippy(td, {
+                    // content: (reference) => reference.getAttribute('title'),
+                    content: tipMap.value[row],
+                    allowHTML: true,
+                    arrow: true,
+                    placement: 'top',
+                    delay: [0, 0]
+                });
             }
         },
         ...props.customOption,
