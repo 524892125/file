@@ -70,3 +70,20 @@ curl -X GET "localhost:9200/"
                             版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
 
 原文链接：https://blog.csdn.net/willingtolove/article/details/118017928
+
+
+运行前命令
+
+sudo useradd elasticsearch
+sudo chown -R elasticsearch:elasticsearch /usr/local/elasticsearch
+
+sh脚本
+```shell
+#!/bin/sh
+su - elasticsearch -c "
+cd /home/elasticsearch-8.17.1/
+bin/elasticsearch
+"
+
+
+```
