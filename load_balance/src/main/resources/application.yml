@@ -1,0 +1,7 @@
+# application.yml
+game-api:
+  backends:
+    - http://119.45.47.59
+    - http://kiifstudio.com
+server:
+  port: 8083
