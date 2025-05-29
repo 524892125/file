@@ -55,9 +55,9 @@ public class GameApiForwardController {
         HttpMethod method = HttpMethod.resolve(request.getMethod());
 
 
-            log.info("to: {}", fullUrl);
-            log.info("m: {}", request.getMethod());
-            log.info("h: {}", headers);
+        log.info("to: {}", fullUrl);
+        log.info("m: {}", request.getMethod());
+        log.info("h: {}", headers);
         try {
             HttpEntity<?> newRequest = buildNewRequest(request, headers);
             ResponseEntity<byte[]> response = restTemplate.exchange(fullUrl, method, newRequest, byte[].class);
@@ -65,21 +65,25 @@ public class GameApiForwardController {
             HttpHeaders responseHeaders = response.getHeaders();
             byte[] bodyBytes = response.getBody();
 
+            String res = "";
             if ("br".equalsIgnoreCase(responseHeaders.getFirst(HttpHeaders.CONTENT_ENCODING))) {
                 // 先 Brotli 解压
                 String decoded = decodeBrotli(bodyBytes);
                 log.info("Decoded response body: {}", decoded);
+                res = decoded;
             } else {
                 // 普通 UTF-8 解码
                 String body = new String(bodyBytes, StandardCharsets.UTF_8);
                 log.info("Response body: {}", body);
+                res = body;
             }
 
             // 直接转发字节流，防止编码问题
-            HttpHeaders headersToReturn = response.getHeaders();
+//            HttpHeaders headersToReturn = response.getHeaders();
+
             return ResponseEntity.status(response.getStatusCode())
-                    .headers(headersToReturn)
-                    .body(response.getBody());
+//                    .headers(headersToReturn)
+                    .body(res);
 
         } catch (Exception e) {
             log.error("Forward error", e);
@@ -88,48 +92,48 @@ public class GameApiForwardController {
     }
 
     private  HttpEntity<?> buildNewRequest(HttpServletRequest request, HttpHeaders headers) throws IOException {
-            HttpEntity<?> newRequest;
+        HttpEntity<?> newRequest;
 
-            String contentType = request.getContentType();
-            if ("POST".equalsIgnoreCase(request.getMethod()) && contentType != null) {
-                if (contentType.contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
-                    // 表单格式 application/x-www-form-urlencoded
-                    Map<String, String[]> parameterMap = request.getParameterMap();
-                    MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-                    for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-                        for (String value : entry.getValue()) {
-                            formData.add(entry.getKey(), value);
-                        }
+        String contentType = request.getContentType();
+        if ("POST".equalsIgnoreCase(request.getMethod()) && contentType != null) {
+            if (contentType.contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
+                // 表单格式 application/x-www-form-urlencoded
+                Map<String, String[]> parameterMap = request.getParameterMap();
+                MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+                for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+                    for (String value : entry.getValue()) {
+                        formData.add(entry.getKey(), value);
                     }
-                    newRequest = new HttpEntity<>(formData, headers);
-                } else if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
-                    if (!(request instanceof MultipartHttpServletRequest)) {
-                        request = new StandardServletMultipartResolver().resolveMultipart(request);
-                    }
-
-                    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-                    MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-
-                    // 只转发表单字段，不转发文件
-                    multipartRequest.getParameterMap().forEach((key, values) -> {
-                        for (String value : values) {
-                            formData.add(key, value);
-                        }
-                    });
-
-                    newRequest = new HttpEntity<>(formData, headers);
-                } else {
-                    // 原始请求体转发（JSON 或其他）
-                    byte[] rawBody = readRequestBody(request);
-                    headers.setContentLength(rawBody.length);
-                    newRequest = new HttpEntity<>(rawBody, headers);
                 }
-            } else {
-                // GET 或其他无 body 的请求
-                newRequest = new HttpEntity<>(headers);
-            }
+                newRequest = new HttpEntity<>(formData, headers);
+            } else if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+                if (!(request instanceof MultipartHttpServletRequest)) {
+                    request = new StandardServletMultipartResolver().resolveMultipart(request);
+                }
 
-            return newRequest;
+                MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+                MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+
+                // 只转发表单字段，不转发文件
+                multipartRequest.getParameterMap().forEach((key, values) -> {
+                    for (String value : values) {
+                        formData.add(key, value);
+                    }
+                });
+
+                newRequest = new HttpEntity<>(formData, headers);
+            } else {
+                // 原始请求体转发（JSON 或其他）
+                byte[] rawBody = readRequestBody(request);
+                headers.setContentLength(rawBody.length);
+                newRequest = new HttpEntity<>(rawBody, headers);
+            }
+        } else {
+            // GET 或其他无 body 的请求
+            newRequest = new HttpEntity<>(headers);
+        }
+
+        return newRequest;
     }
 
     private byte[] readRequestBody(HttpServletRequest request) throws IOException {
