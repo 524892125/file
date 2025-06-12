@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: external-load-balance
+          uri: lb://external-service
+          predicates:
+            - Path=/api/**
+      loadbalancer:
+        use404 = true
+
+# 自定义负载目标服务地址（通过注册模拟）
+external-services:
+  external-service:
+    - http://119.45.47.59
+    - http://kiifstudio.com
