@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    username: gmadmin
+    password: JE7Nr8FtxTbmTxrX
+    url: jdbc:mysql://8.140.244.117:3306/gmadmin?useUnicode=true&characterEncoding=utf8
+  redis:
+    host: 115.120.231.129
+    port: 6379
+    password: Eden@redis_1204
+    database: 99
+  data:
+    mongodb:
+      uri: mongodb://rwuser:Eden_1204__@116.63.46.114:8635
+      database: kiif_test_formal_test

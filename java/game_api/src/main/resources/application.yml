@@ -1,0 +1,23 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+  profiles:
+    active: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    lettuce:
+      pool:
+        max-active: 80        # 最大连接数，允许并发访问数量（合理范围 50-100）
+        max-idle: 16          # 最大空闲连接，避免资源浪费（建议为 max-active 的 1/4）
+        min-idle: 8           # 最小空闲连接，保持快速响应（可保持在 1/8 左右）
+        max-wait: 2000ms      # 连接不够时最大等待时间（提升容错性）
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+server:
+  port: 8082
+  compression:
+    enabled: true
+    mime-types: application/json
+    min-response-size: 1024

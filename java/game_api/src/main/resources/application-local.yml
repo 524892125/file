@@ -1,0 +1,20 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.9.128:3306/gmadmin?useUnicode=true&characterEncoding=utf8
+  redis:
+    host: 115.120.231.129
+    port: 6379
+    password: Eden@redis_1204
+    database: 99
+  data:
+    mongodb:
+      uri: mongodb://192.168.50.94:27018
+      database: project_eden_dev
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
