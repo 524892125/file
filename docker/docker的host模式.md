@@ -1,0 +1,3 @@
+docker run --network host ...
+
+host模式性能最好
