@@ -47,3 +47,43 @@
                             版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
 
 原文链接：https://blog.csdn.net/weixin_42259470/article/details/142599277
+
+
+
+
+
+gpt推荐配置
+## ===== IntelliJ IDEA 2025 推荐 VM Options =====
+
+# 初始堆大小（可以保持默认）
+-Xms512m
+
+# 最大堆大小（建议不超过 4G~6G，避免 native memory 被挤压）
+-Xmx4096m
+
+# 代码缓存区大小
+-XX:ReservedCodeCacheSize=512m
+
+# 每个线程的栈大小（512k 比默认 1M 小一半，可节省 native memory）
+-Xss512k
+
+# 启用堆转储（方便排查内存泄漏）
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=C:\Users\li\java_error_in_idea.hprof
+
+# 减少 GC 暴涨
+-XX:JbrShrinkingGcMaxHeapFreeRatio=40
+
+# 开启诊断 VM 选项
+-XX:+UnlockDiagnosticVMOptions
+
+# 关闭快速抛异常省略堆栈
+-XX:-OmitStackTraceInFastThrow
+
+# IDE 使用 Metal 渲染（Windows 可保持默认）
+-Dsun.java2d.metal=true
+
+# 如果有 JCEF/Chrome 插件内存压力大，可禁用硬件加速（可选）
+# -Dide.browser.jcef.gpu.disable=true
+
+## ===== End =====
