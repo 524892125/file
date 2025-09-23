@@ -53,13 +53,18 @@
 
 
 gpt推荐配置
+# custom IntelliJ IDEA VM options (expand/override 'bin\idea64.exe.vmoptions')
+
+
 ## ===== IntelliJ IDEA 2025 推荐 VM Options =====
 
 # 初始堆大小（可以保持默认）
--Xms512m
+-Xms3072m
 
 # 最大堆大小（建议不超过 4G~6G，避免 native memory 被挤压）
--Xmx4096m
+-Xmx8192m
+# 增加元空间
+-XX:MaxMetaspaceSize=1024m
 
 # 代码缓存区大小
 -XX:ReservedCodeCacheSize=512m
@@ -86,4 +91,22 @@ gpt推荐配置
 # 如果有 JCEF/Chrome 插件内存压力大，可禁用硬件加速（可选）
 # -Dide.browser.jcef.gpu.disable=true
 
+# 禁用动画效果
+-Dide.no.platform.extensions=true
+# 减少UI更新频率
+-Didea.expensive.listener.threshold=500
+# 启用硬件加速
+-Dsun.java2d.opengl=true
+-Dsun.java2d.d3d=false
+# 调整UI渲染参数
+-Didea.heap.buffer.size=2048
+-Didea.max.intellisense.filesize=5000
+# 使用原生文件监视器
+-Didea.filewatcher.disabled=false
+-Didea.use.native.fs.for.win=true
+# 调整监视间隔
+-Didea.filewatcher.poll.interval=1000
+
+
 ## ===== End =====
+
