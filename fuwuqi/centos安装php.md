@@ -45,3 +45,52 @@ yum install php-devel php-fpm php-gd php-mbstring php-mysql php-pdo php-xml php-
 8、至此PHP8.3已全部完成，如果有使用redis、rabbitmq等可能需要自行编译安装扩展，有时间我再单独写一片文章，谢谢。
 
 发布于 2024-03-15 09:56・IP 属地福建
+
+
+
+明白了，你想在 Debian 上安装 PHP 8.3。我给你一个完整指南（支持 Debian 12 / 11），包括 CLI、FPM 和常用扩展。
+
+1️⃣ 添加 PHP 官方源
+
+Debian 默认仓库可能没有最新 PHP 8.3，需要使用 Sury 的 PHP 仓库：
+
+sudo apt update
+sudo apt install -y ca-certificates apt-transport-https lsb-release wget gnupg2
+wget -O- https://packages.sury.org/php/apt.gpg | sudo gpg --dearmor -o /usr/share/keyrings/php-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/php-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
+sudo apt update
+
+2️⃣ 安装 PHP 8.3
+安装 CLI + FPM
+sudo apt install -y php8.3 php8.3-cli php8.3-fpm
+
+安装常用扩展（可根据需求选择）
+sudo apt install -y php8.3-common php8.3-mbstring php8.3-curl php8.3-mysql php8.3-gd php8.3-xml php8.3-bcmath php8.3-zip php8.3-intl php8.3-dev php8.3-sqlite3
+
+
+php8.3-dev → 用于 PECL / 编译扩展（Swoole、Redis 等）
+
+php8.3-cli → 命令行 PHP
+
+php8.3-fpm → PHP-FPM，用于 Nginx/Apache
+
+3️⃣ 设置默认 PHP 版本（可选）
+
+如果系统中有多个 PHP 版本：
+
+sudo update-alternatives --install /usr/bin/php php /usr/bin/php8.3 83
+sudo update-alternatives --config php
+
+
+检查版本：
+
+php -v
+
+4️⃣ 启动 / 重启 PHP-FPM
+sudo systemctl enable php8.3-fpm
+sudo systemctl start php8.3-fpm
+sudo systemctl status php8.3-fpm
+
+5️⃣ 验证
+php -v
+php -m | grep curl   # 检查扩展
