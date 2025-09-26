@@ -94,3 +94,29 @@ sudo systemctl status php8.3-fpm
 5️⃣ 验证
 php -v
 php -m | grep curl   # 检查扩展
+
+
+方法三：PECL 命令指定 PHP
+
+如果你用 pecl 安装扩展，可以临时指定 PHP_PEAR_PHP_BIN 环境变量：
+
+sudo PHP_PEAR_PHP_BIN=/usr/bin/php8.3 pecl install swoole
+
+
+
+明白，我帮你写一条 Debian 下为 PHP 8.3 安装 Swoole 扩展的一条命令脚本，包含依赖安装、编译、启用扩展，保证 CLI 和 FPM 可用。
+
+sudo apt update && \
+sudo apt install -y php8.3-cli php8.3-dev php8.3-fpm libcurl4-openssl-dev pkg-config build-essential unzip && \
+pecl download swoole && \
+tar -xvf swoole-*.tgz && \
+cd swoole-* && \
+/usr/bin/phpize8.3 && \
+./configure --with-php-config=/usr/bin/php-config8.3 --enable-sockets --enable-openssl --enable-swoole-curl && \
+make -j$(nproc) && \
+sudo make install && \
+cd .. && rm -rf swoole-* && rm -f swoole-*.tgz && \
+echo "extension=swoole.so" | sudo tee /etc/php/8.3/cli/conf.d/20-swoole.ini && \
+echo "extension=swoole.so" | sudo tee /etc/php/8.3/fpm/conf.d/20-swoole.ini && \
+sudo systemctl restart php8.3-fpm && \
+php -v && php -m | grep swoole
