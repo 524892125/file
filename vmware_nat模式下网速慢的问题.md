@@ -21,3 +21,6 @@ sudo nano /etc/fstab
 若要立即测试该配置，可以手动运行以下命令来挂载：
 sudo mount -a
 这样就可以避免每次开机都手动执行挂载命令的问题。请注意，如果您的系统中没有安装 vmhgfs-fuse，您需要先安装 VMware Tools 或者 VMware Horizon Client 中的相应组件，以便支持 VMware 的共享文件夹功能。
+
+vmware无法开启vxt的问题
+https://blog.csdn.net/Ning2019/article/details/144770404?sharetype=blog&shareId=144770404&sharerefer=APP&sharesource=m0_46346750&sharefrom=link
