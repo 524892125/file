@@ -61,7 +61,7 @@ pipeline {
                         }
 
                         dir('D:/guanwang_code/kiif_ase_website') {
-                            bat 'pnpm build'
+                            // bat 'pnpm build'
                         }
 
                         if (params.MSG_ID?.trim()) {
@@ -85,28 +85,40 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    withCredentials([usernamePassword(
-                        credentialsId: 'guanwang_server',
-                        usernameVariable: 'U', // 缩短变量名避免解析干扰
-                        passwordVariable: 'P'
-                    )]) {
-                        
-                        // 注意：这里使用双引号 "" 允许 Groovy 直接注入变量值
-                        // 使用 ${U} 和 ${P} 而不是 $env:DEPLOY_USER
+                    withCredentials([usernamePassword(credentialsId: 'guanwang_server', usernameVariable: 'U', passwordVariable: 'P')]) {
                         powershell """
                             \$winscp = 'D:\\WinSCP\\WinSCP.com'
-                            
+                            \$localPath = 'D:/guanwang_code/kiif_ase_website/.output/server'
+                            \$remotePath = '/www/wwwroot/website'
+                            \$archiveName = 'dist.tar.gz'
+        
+                            # --- 1. 本地打包 (Windows 10+ 自带 tar) ---
+                            Write-Host "正在本地打包..."
+                            cd \$localPath
+                            tar -czvf \$archiveName *
+        
+                            # --- 2. 编写 WinSCP 脚本上传 ---
                             \$script = @(
+                                "option batch on"
+                                "option confirm off"
                                 "open sftp://${U}:${P}@8.140.244.117/ -hostkey=*" 
-                                "lcd D:/guanwang_code/kiif_ase_website/.output"
-                                "cd /www/wwwroot/website"
-                                "put -r *"
+                                "lcd \$localPath" 
+                                "cd \$remotePath"
+                                "put \$archiveName" # 只上传这一个压缩包
+                                
+                                # --- 3. 核心：通过 WinSCP call 执行远程解压 ---
+                                "call tar -xzvf \$archiveName -C \$remotePath"
+                                "call rm \$archiveName" # 解压完删除远程压缩包
+                                
                                 "exit"
                             )
-                            
+        
                             \$script | Out-File -Encoding ASCII winscp.txt
                             & \$winscp /script=winscp.txt
-                            Remove-Item winscp.txt # 部署完删除临时文件防止密码泄露
+                            
+                            # --- 4. 清理本地压缩包 ---
+                            Remove-Item winscp.txt
+                            Remove-Item "\$localPath/\$archiveName"
                         """
                     }
                 }
